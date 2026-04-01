@@ -34,7 +34,7 @@ export function MpeDashboard() {
               <Users size={80} />
             </div>
             <CardHeader>
-              <CardDescription className="text-slate-500 font-medium">Novos Leads</CardTitle>
+              <CardDescription className="text-slate-500 font-medium">Novos Leads</CardDescription>
               <CardTitle className="text-4xl font-bold">42</CardTitle>
             </CardHeader>
             <CardContent>

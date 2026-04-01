@@ -31,8 +31,9 @@ const App = () => (
           <Route path="/partner" element={<PartnerDashboard />} />
           <Route path="/partner/*" element={<PartnerDashboard />} />
 
-          {/* Admin Routes - placeholder */}
-          <Route path="/admin" element={<div className="p-10 text-center font-bold">Admin Dashboard em Breve</div>} />
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

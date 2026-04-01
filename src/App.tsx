@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Auth from "./pages/Auth";
 import { MpeDashboard } from "./pages/MpeDashboard";
 import { PartnerDashboard } from "./pages/PartnerDashboard";
+import { AdminDashboard } from "./pages/AdminDashboard";
 import { RoleSwitcher } from "./components/RoleSwitcher";
 import NotFound from "./pages/NotFound.tsx";
 

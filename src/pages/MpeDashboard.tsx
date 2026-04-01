@@ -49,7 +49,7 @@ export function MpeDashboard() {
               <ShoppingBag size={80} />
             </div>
             <CardHeader>
-              <CardDescription className="text-slate-500 font-medium">Serviços Ativos</CardTitle>
+              <CardDescription className="text-slate-500 font-medium">Serviços Ativos</CardDescription>
               <CardTitle className="text-4xl font-bold">3</CardTitle>
             </CardHeader>
             <CardContent>

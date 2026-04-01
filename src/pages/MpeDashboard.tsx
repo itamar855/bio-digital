@@ -132,7 +132,7 @@ export function MpeDashboard() {
                 </div>
                 <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
                   <Button variant="secondary" size="sm">Editar Website</Button>
-                  <Button variant="primary" size="sm" className="bg-primary">Gerar Conteúdo IA</Button>
+                  <Button variant="default" size="sm" className="bg-primary">Gerar Conteúdo IA</Button>
                 </div>
               </div>
               

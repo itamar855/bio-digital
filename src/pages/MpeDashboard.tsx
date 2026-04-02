@@ -1,16 +1,80 @@
+import { useEffect, useState } from "react";
 import { MpeLayout } from "@/components/MpeLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Globe, ShoppingBag, CheckCircle2, Circle, TrendingUp, Users, ArrowRight, Zap, Sparkles } from "lucide-react";
+import { Globe, ShoppingBag, CheckCircle2, Circle, TrendingUp, Users, ArrowRight, Zap, Sparkles, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabase";
+import { Database } from "@/lib/database.types";
+
+type MpeDetails = Database['public']['Tables']['mpe_details']['Row'];
 
 export function MpeDashboard() {
+  const { user, profile } = useAuth();
+  const [details, setDetails] = useState<MpeDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchMpeDetails();
+    }
+  }, [user]);
+
+  const fetchMpeDetails = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('mpe_details')
+        .select('*')
+        .eq('user_id', user!.id)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // If no details exist, create them
+          const { data: newData, error: insertError } = await supabase
+            .from('mpe_details')
+            .insert({
+              user_id: user!.id,
+              company_name: 'Minha Empresa', // Default
+            })
+            .select()
+            .single();
+          if (insertError) throw insertError;
+          setDetails(newData);
+        } else {
+          throw error;
+        }
+      } else {
+        setDetails(data);
+      }
+    } catch (error) {
+      console.error('Error fetching MPE details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <MpeLayout>
+        <div className="h-[60vh] flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </MpeLayout>
+    );
+  }
+
   return (
     <MpeLayout>
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <header>
-          <h1 className="text-3xl font-extrabold text-slate-900">Olá, Café Central! 👋</h1>
-          <p className="text-slate-500 mt-2">Veja como está o seu progresso digital hoje.</p>
+          <h1 className="text-3xl font-extrabold text-slate-900">
+            Olá, {profile?.full_name || 'Usuário'}! 👋
+          </h1>
+          <p className="text-slate-500 mt-2">
+            Veja como está o progresso digital da <span className="font-semibold text-primary">{details?.company_name || 'sua empresa'}</span> hoje.
+          </p>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -20,7 +84,7 @@ export function MpeDashboard() {
             </div>
             <CardHeader>
               <CardDescription className="text-primary font-medium">Visitas ao Site</CardDescription>
-              <CardTitle className="text-4xl font-bold">1,248</CardTitle>
+              <CardTitle className="text-4xl font-bold">{details?.site_visits?.toLocaleString() || 0}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-1 text-xs text-green-600 font-semibold bg-green-50 w-fit px-2 py-1 rounded-full border border-green-100">
@@ -35,7 +99,7 @@ export function MpeDashboard() {
             </div>
             <CardHeader>
               <CardDescription className="text-slate-500 font-medium">Novos Leads</CardDescription>
-              <CardTitle className="text-4xl font-bold">42</CardTitle>
+              <CardTitle className="text-4xl font-bold">{details?.new_leads || 0}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-1 text-xs text-green-600 font-semibold bg-green-50 w-fit px-2 py-1 rounded-full border border-green-100">
@@ -50,7 +114,7 @@ export function MpeDashboard() {
             </div>
             <CardHeader>
               <CardDescription className="text-slate-500 font-medium">Serviços Ativos</CardDescription>
-              <CardTitle className="text-4xl font-bold">3</CardTitle>
+              <CardTitle className="text-4xl font-bold">{details?.active_services_count || 0}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-1 text-xs text-slate-500 font-semibold bg-slate-50 w-fit px-2 py-1 rounded-full border border-slate-200">
@@ -70,19 +134,19 @@ export function MpeDashboard() {
                 <CardDescription>Complete os passos para o sucesso do seu negócio.</CardDescription>
               </div>
               <div className="text-right">
-                <span className="text-2xl font-bold text-primary">60%</span>
+                <span className="text-2xl font-bold text-primary">{details?.journey_progress || 0}%</span>
                 <p className="text-[10px] uppercase font-bold text-slate-400">Progresso</p>
               </div>
             </CardHeader>
             <CardContent className="pt-6">
-              <Progress value={60} className="h-2 mb-8 bg-slate-100" />
+              <Progress value={details?.journey_progress || 0} className="h-2 mb-8 bg-slate-100" />
               <div className="space-y-4">
                 {[
-                  { title: "Publicar Website", done: true, points: "20 pts" },
-                  { title: "Conectar WhatsApp Business", done: true, points: "15 pts" },
-                  { title: "Contratar Contador Especializado", done: true, points: "30 pts" },
-                  { title: "Criar Primeira Campanha de Ads", done: false, points: "25 pts" },
-                  { title: "Configurar Delivery/E-commerce", done: false, points: "40 pts" },
+                  { title: "Publicar Website", done: (details?.journey_progress || 0) >= 20, points: "20 pts" },
+                  { title: "Conectar WhatsApp Business", done: (details?.journey_progress || 0) >= 35, points: "15 pts" },
+                  { title: "Contratar Contador Especializado", done: (details?.journey_progress || 0) >= 65, points: "30 pts" },
+                  { title: "Criar Primeira Campanha de Ads", done: (details?.journey_progress || 0) >= 90, points: "25 pts" },
+                  { title: "Configurar Delivery/E-commerce", done: (details?.journey_progress || 0) >= 100, points: "40 pts" },
                 ].map((item, i) => (
                   <div key={i} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${item.done ? "bg-slate-50 border-slate-100 opacity-60" : "bg-white border-slate-200 shadow-sm hover:border-primary/50 cursor-pointer"}`}>
                     <div className="flex items-center gap-3">
@@ -122,9 +186,13 @@ export function MpeDashboard() {
                 </div>
                 <div className="p-4 space-y-3">
                   <div className="h-4 bg-slate-100 w-1/3 rounded"></div>
-                  <div className="h-20 bg-primary/5 border border-primary/10 rounded-lg flex items-center justify-center">
-                    <Zap className="text-primary/20" size={32} />
-                  </div>
+                  {details?.site_preview_url ? (
+                    <img src={details.site_preview_url} alt="Preview" className="w-full h-20 object-cover rounded-lg" />
+                  ) : (
+                    <div className="h-20 bg-primary/5 border border-primary/10 rounded-lg flex items-center justify-center">
+                      <Zap className="text-primary/20" size={32} />
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <div className="h-2 bg-slate-50 w-full rounded"></div>
                     <div className="h-2 bg-slate-50 w-3/4 rounded"></div>
@@ -151,4 +219,4 @@ export function MpeDashboard() {
       </div>
     </MpeLayout>
   );
-}
+}

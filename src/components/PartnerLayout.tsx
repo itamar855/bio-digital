@@ -1,6 +1,7 @@
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarRail, SidebarTrigger } from "@/components/ui/sidebar";
 import { LayoutDashboard, UserCircle, Search, FolderKanban, Banknote, PenTool, LogOut, MessageSquare, Bell } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 
 const partnerMenuItems = [
   { title: "Painel do Parceiro", icon: LayoutDashboard, url: "/partner" },
@@ -67,18 +68,19 @@ export function PartnerLayout({ children }: { children: React.ReactNode }) {
         </Sidebar>
 
         <main className="flex-1 overflow-auto">
-          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white/80 backdrop-blur-md px-6 shadow-sm">
+          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
             <SidebarTrigger className="md:hidden" />
             <div className="flex flex-1 items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-800">
+              <h2 className="text-lg font-semibold text-foreground">
                 {partnerMenuItems.find(item => item.url === location.pathname)?.title || "Dashboard"}
               </h2>
               <div className="flex items-center gap-4">
-                <button className="relative p-2 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full">
+                <ThemeToggle />
+                <button className="relative p-2 text-slate-400 hover:text-slate-600 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <Bell size={20} />
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
                 </button>
-                <button className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full">
+                <button className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <MessageSquare size={20} />
                 </button>
               </div>

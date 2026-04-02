@@ -1,6 +1,7 @@
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarRail, SidebarTrigger } from "@/components/ui/sidebar";
 import { LayoutDashboard, Globe, ShoppingBag, Settings, BookOpen, CreditCard, LogOut, User, MessageCircle, Info } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 
 const menuItems = [
   { title: "Painel Geral", icon: LayoutDashboard, url: "/mpe" },
@@ -76,17 +77,18 @@ export function MpeLayout({ children }: { children: React.ReactNode }) {
         </Sidebar>
 
         <main className="flex-1 overflow-auto">
-          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white/80 backdrop-blur-md px-6 shadow-sm">
+          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
             <SidebarTrigger className="md:hidden" />
             <div className="flex flex-1 items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-800">
+              <h2 className="text-lg font-semibold text-foreground">
                 {menuItems.find(item => item.url === location.pathname)?.title || "Dashboard"}
               </h2>
               <div className="flex items-center gap-4">
-                <button className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full">
+                <ThemeToggle />
+                <button className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <MessageCircle size={20} />
                 </button>
-                <button className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full">
+                <button className="p-2 text-slate-400 hover:text-slate-600 bg-slate-100 dark:bg-slate-800 rounded-full">
                   <Info size={20} />
                 </button>
               </div>

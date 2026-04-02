@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Auth from "./pages/Auth";
 import { MpeDashboard } from "./pages/MpeDashboard";
 import { PartnerDashboard } from "./pages/PartnerDashboard";
@@ -32,27 +33,29 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, 
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <RoleSwitcher />
-          <Routes>
-            <Route path="/" element={<Navigate to="/auth" replace />} />
-            <Route path="/auth" element={<Auth />} />
-            
-            <Route path="/mpe/*" element={<ProtectedRoute allowedRole='mpe'><MpeDashboard /></ProtectedRoute>} />
-            <Route path="/partner/*" element={<ProtectedRoute allowedRole='partner'><PartnerDashboard /></ProtectedRoute>} />
-            <Route path="/admin/*" element={<ProtectedRoute allowedRole='admin'><AdminDashboard /></ProtectedRoute>} />
+  <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <RoleSwitcher />
+            <Routes>
+              <Route path="/" element={<Navigate to="/auth" replace />} />
+              <Route path="/auth" element={<Auth />} />
+              
+              <Route path="/mpe/*" element={<ProtectedRoute allowedRole='mpe'><MpeDashboard /></ProtectedRoute>} />
+              <Route path="/partner/*" element={<ProtectedRoute allowedRole='partner'><PartnerDashboard /></ProtectedRoute>} />
+              <Route path="/admin/*" element={<ProtectedRoute allowedRole='admin'><AdminDashboard /></ProtectedRoute>} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

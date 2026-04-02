@@ -14,6 +14,7 @@ import { AdminPartners } from "./admin/AdminPartners";
 import { AdminMarketplace } from "./admin/AdminMarketplace";
 import { AdminFinanceiro } from "./admin/AdminFinanceiro";
 import { AdminSuporte } from "./admin/AdminSuporte";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type GlobalMetrics = Database['public']['Tables']['global_metrics']['Row'];
 
@@ -92,11 +93,12 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         </Sidebar>
 
         <main className="flex-1 overflow-auto">
-          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white/80 backdrop-blur-md px-6 shadow-sm">
+          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
             <SidebarTrigger className="md:hidden" />
             <div className="flex flex-1 items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-800">Administração Geral</h2>
+              <h2 className="text-lg font-semibold text-foreground">Administração Geral</h2>
               <div className="flex items-center gap-4">
+                <ThemeToggle />
                 <Badge variant="outline" className="text-destructive border-destructive/20 bg-destructive/5 font-bold">Admin</Badge>
               </div>
             </div>
